@@ -1,62 +1,33 @@
-<br />
-<center>
-  <a href="https://github.com/PecceG2/StudioLED">
-    <img src="https://raw.githubusercontent.com/PecceG2/Home-Assistant-SNMP-Sensor-Server/main/icon.png" alt="Logo" width="80" height="80">
-  </a>
+# SNMP Sensor Server
 
-<p align="center">
-  <h3 align="center">Home Assistant SNMP Sensor Server</h3>
+Home Assistant add-on that runs an SNMP v2c agent so you can monitor Home Assistant entities (and host details) from tools such as LibreNMS or Nagios.
 
+![aarch64](https://img.shields.io/badge/aarch64-yes-green.svg)
+![amd64](https://img.shields.io/badge/amd64-yes-green.svg)
 
-  <img align="center">
-    HA Add-on to expose the different sensors, entities and objects via SNMP automatically.</br>
-    It provides monitoring of the system, hardware and HA integrations via external monitoring software like LibreNMS or Nagios.
-    <br />
-    <br />
-    <a href="https://github.com/PecceG2/"><strong>View my projects »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/PecceG2/Home-Assistant-SNMP-Sensor-Server/issues">Report a Bug</a>
-    ·
-    <a href="https://github.com/PecceG2/Home-Assistant-SNMP-Sensor-Server/blob/master/LICENSE.md">View License</a>
-    ·
-    <a href="https://github.com/PecceG2/Home-Assistant-SNMP-Sensor-Server/issues">Request Feature</a>
-  </p>
-</p>
+## Requirements
 
-![Supports aarch64 Architecture][aarch64-shield] ![Supports amd64 Architecture][amd64-shield] ![Supports armhf Architecture][armhf-shield] ![Supports armv7 Architecture][armv7-shield] ![Supports i386 Architecture][i386-shield]
+This add-on targets **64-bit** Home Assistant installations only, matching [current Supervisor support](https://www.home-assistant.io/blog/2025/05/22/deprecating-core-and-supervised-installation-methods-and-32-bit-systems/): **aarch64** (ARM64, e.g. Raspberry Pi 4/5) and **amd64** (x86_64). Older 32-bit platforms (`armhf`, `armv7`, `i386`) are not listed in the add-on manifest, so they are unsupported here as well.
 
-</center>
+## Installation
 
-**Installation**
----
+1. In Home Assistant, open **Settings** → **Add-ons** → **Add-on store** (or **Backup & Supervisor** → **Add-on store** on older layouts).
+2. Open the menu (**⋮**) → **Repositories**.
+3. Add this repository URL and confirm:
 
-1. In your HA panel, go to `Configuration` -> `Add-ons, Backup & supervisor`.
+   `https://github.com/iShark5060/Home-Assistant-SNMP-Sensor-Server`
 
-2. In the lower right corner, click on `Add-on Store` button.
+4. Refresh the add-on store, then find **SNMP Sensor Server** and install it.
 
-3. Go to the `three dots` on the top right screen and open `Repositories`
+## Configuration
 
-4. Copy and paste this link in Add box, and press "Add" button: 
-`https://github.com/PecceG2/Home-Assistant-SNMP-Sensor-Server`
+See **[DOCS.md](DOCS.md)** for options (`community`, `sysname`, `location`, sensor exposure, and so on).
 
-5. Close Add-on pop-up, refresh the page with F5 and go to `Configuration` -> `Add-ons, Backup & supervisor`.
+## Support
 
-6. Find "SNMP Sensor Server" add-on and click them. Now, install it.
+- [Issues](https://github.com/iShark5060/Home-Assistant-SNMP-Sensor-Server/issues)
+- [License](LICENSE.md)
 
+## Credits
 
-**Configuration and usage**
----
-Coming soon usage docs
-
-
-<br />
-
-
-[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
-[amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
-[armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
-[armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
-[i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
-
-This is a modification of the original [darthsebulba04 project](https://github.com/darthsebulba04/hassio-snmpd/) under the MIT license to add sensor functionality and HA control via SNMP.
+This fork continues development of **[PecceG2/Home-Assistant-SNMP-Sensor-Server](https://github.com/PecceG2/Home-Assistant-SNMP-Sensor-Server)**, which extended the earlier **[darthsebulba04/hassio-snmpd](https://github.com/darthsebulba04/hassio-snmpd/)** project. Licensed under the MIT License (see `LICENSE.md`).

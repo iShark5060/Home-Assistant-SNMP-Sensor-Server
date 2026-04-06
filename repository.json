@@ -1,5 +1,5 @@
 {
-	"name": "PecceG2 SNMP Server Add-on",
-	"url": "https://github.com/PecceG2/HASS-SNMP-Sensors-and-Entities-addon",
-	"maintainer": "PecceG2 <me@pecceg2.com"
+	"name": "iShark5060 SNMP Sensor Server Add-on",
+	"url": "https://github.com/iShark5060/Home-Assistant-SNMP-Sensor-Server",
+	"maintainer": "Lutz Schwemer Panchez <shark@shark5060.net"
 }

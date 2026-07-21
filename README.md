@@ -1,9 +1,13 @@
 # SNMP Sensor Server
 
-Home Assistant add-on that runs an SNMP v2c agent so you can monitor Home Assistant entities (and host details) from tools such as LibreNMS or Nagios.
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+[![CI](https://github.com/iShark5060/Home-Assistant-SNMP-Sensor-Server/actions/workflows/ci.yml/badge.svg)](https://github.com/iShark5060/Home-Assistant-SNMP-Sensor-Server/actions/workflows/ci.yml)
+[![PR](https://github.com/iShark5060/Home-Assistant-SNMP-Sensor-Server/actions/workflows/pr.yml/badge.svg)](https://github.com/iShark5060/Home-Assistant-SNMP-Sensor-Server/actions/workflows/pr.yml)
 ![aarch64](https://img.shields.io/badge/aarch64-yes-green.svg)
 ![amd64](https://img.shields.io/badge/amd64-yes-green.svg)
+[![Cursor](https://img.shields.io/badge/Cursor-IDE-141414?logo=cursor&logoColor=white)](https://cursor.com)
+
+Home Assistant add-on that runs an SNMP v2c agent so you can monitor Home Assistant entities (and host details) from tools such as LibreNMS or Nagios.
 
 ## Requirements
 
@@ -31,3 +35,15 @@ See **[DOCS.md](DOCS.md)** for options (`community`, `sysname`, `location`, sens
 ## Credits
 
 This fork continues development of **[PecceG2/Home-Assistant-SNMP-Sensor-Server](https://github.com/PecceG2/Home-Assistant-SNMP-Sensor-Server)**, which extended the earlier **[darthsebulba04/hassio-snmpd](https://github.com/darthsebulba04/hassio-snmpd/)** project. Licensed under the MIT License (see `LICENSE.md`).
+
+## Scripts
+
+| Script             | Description                                             |
+| ------------------ | ------------------------------------------------------- |
+| `scripts/validate` | Python `py_compile` + `docker build` (CI quality gate). |
+
+## Development
+
+Agent-oriented docs: [openwiki/quickstart.md](openwiki/quickstart.md).
+
+Engineering standards: AppBase `docs/org-standards/` with [personal-repos.md](https://github.com/Dark-Avian-Labs/AppBase/blob/main/docs/org-standards/personal-repos.md) (GitHub-hosted runners).

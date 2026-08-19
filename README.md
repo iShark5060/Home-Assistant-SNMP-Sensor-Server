@@ -7,7 +7,7 @@
 ![amd64](https://img.shields.io/badge/amd64-yes-green.svg)
 [![Cursor](https://img.shields.io/badge/Cursor-IDE-141414?logo=cursor&logoColor=white)](https://cursor.com)
 
-Home Assistant add-on that runs an SNMP v2c agent so you can monitor Home Assistant entities (and host details) from tools such as LibreNMS or Nagios.
+Home Assistant add-on that runs an SNMP v2c agent. Expose Home Assistant entities and host details to LibreNMS or Nagios.
 
 ## Requirements
 

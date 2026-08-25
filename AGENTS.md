@@ -1,23 +1,17 @@
 # HA-SNMP (SNMP Sensor Server)
 
-Home Assistant add-on that exposes an SNMP v2c agent for HA entities and host details.
+## Org standards
 
-## Engineering standards
+CI/README/validate conventions live in AppBase `docs/org-standards/` with personal-repo overrides (`personal-repos.md`). GitHub-hosted `ubuntu-latest`, not Blacksmith. Quality gate: `scripts/validate` (Python `py_compile` + `docker build`).
 
-Follow AppBase `docs/org-standards/` with personal-repo overrides (`personal-repos.md`):
+## Overview
 
-- Runners: `ubuntu-latest`
-- Checkout: `actions/checkout@v7`
-- Quality gate: `scripts/validate` (Python compile + `docker build`)
+Home Assistant Supervisor add-on that runs an SNMP **v2c** agent and can expose HA entity states (plus sys* fields) to monitors like LibreNMS. Install and user options: `README.md` and `DOCS.md`.
 
-## OpenWiki
+## Add-on contracts
 
-This repository has documentation located in the /openwiki directory.
+Requires Supervisor (`homeassistant_api: true`); sensor helpers call `http://supervisor/core/api/states` with `SUPERVISOR_TOKEN`. Architectures are **aarch64** and **amd64** only. Default UDP map is `161/udp`.
 
-Start here:
+When `expose_sensors` is true, `snmpd_configurator.py` appends snmpd `extend` lines (whitelist `sensors_to_expose`: `all` or comma-separated patterns with `*`). It retries until Supervisor returns JSON; a bad API response can stall start. `expose_sensors_OID_base` is passed as argv[2] but unused; printed OIDs come from `snmptranslate` on `NET-SNMP-EXTEND-MIB::nsExtendOutput1Line."<entity_id>"`. `run.sh` may `apk add py3-requests` at runtime when exposing sensors.
 
-- [OpenWiki quickstart](openwiki/quickstart.md)
-
-OpenWiki includes repository overview, architecture notes, workflows, domain concepts, operations, integrations, testing guidance, and source maps.
-
-When working in this repository, read the OpenWiki quickstart first, then follow its links to the relevant architecture, workflow, domain, operation, and testing notes.
+`scripts/validate` compiles `data/*.py` then builds with `--build-arg BUILD_FROM=…` (default `ghcr.io/home-assistant/amd64-base:3.20`).

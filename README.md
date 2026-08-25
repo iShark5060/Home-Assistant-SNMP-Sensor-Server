@@ -25,7 +25,20 @@ This add-on targets **64-bit** Home Assistant installations only, matching [curr
 
 ## Configuration
 
-See **[DOCS.md](DOCS.md)** for options (`community`, `sysname`, `location`, sensor exposure, and so on).
+Default UDP port is **161**. Full option list: **[DOCS.md](DOCS.md)**.
+
+```yaml
+sysname: Home Assistant
+community: public
+location: Home
+name: RPi
+email: rpi@me.com
+expose_sensors: true
+expose_sensors_OID_base: "1.3.6.1.4.1.43.10.210."
+sensors_to_expose: all
+```
+
+`sensors_to_expose` is `all` (every entity) or a comma-separated `entity_id` whitelist with `*` wildcards. `expose_sensors_OID_base` is accepted by the UI but is **not applied** yet; entity OIDs come from Net-SNMP `extend`.
 
 ## Support
 
@@ -44,6 +57,6 @@ This fork continues development of **[PecceG2/Home-Assistant-SNMP-Sensor-Server]
 
 ## Development
 
-Agent-oriented docs: [openwiki/quickstart.md](openwiki/quickstart.md).
+Agent notes: [AGENTS.md](AGENTS.md).
 
 Engineering standards: AppBase `docs/org-standards/` with [personal-repos.md](https://github.com/Dark-Avian-Labs/AppBase/blob/main/docs/org-standards/personal-repos.md) (GitHub-hosted runners).

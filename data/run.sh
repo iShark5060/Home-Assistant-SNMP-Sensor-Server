@@ -95,9 +95,11 @@ if [ "${ENABLE_V3}" = true ]; then
 fi
 
 if bashio::var.true "$(bashio::config 'expose_sensors')"; then
-	bashio::log.info "Generating OID for HA sensors.."
-	apk add py3-requests
-	OUTPUT=$(python3 snmpd_configurator.py ${CONFIG} "$(bashio::config 'expose_sensors_OID_base')" "$(bashio::config 'sensors_to_expose')")
+	bashio::log.info "Generating OID for HA entities.."
+	if ! OUTPUT=$(python3 /snmpd_configurator.py "${CONFIG}" "$(bashio::config 'sensors_to_expose')"); then
+		bashio::log.fatal "Failed to generate entity extend lines."
+		exit 1
+	fi
 	bashio::log.info "${OUTPUT}"
 fi
 

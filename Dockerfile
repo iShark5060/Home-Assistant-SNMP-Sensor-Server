@@ -3,14 +3,9 @@ FROM $BUILD_FROM
 
 ENV LANG C.UTF-8
 
-# Copy data for add-on
 COPY data/* /
-RUN chmod a+x /run.sh
-RUN chmod a+x /get_sensor_data_pyconvert.sh
+RUN chmod a+x /run.sh /get_sensor_data_pyconvert.sh
 
-# Install requirements for add-on
-RUN apk add --no-cache net-snmp net-snmp-tools py3-pip python3 python3-dev
-
-# So let's set it to our add-on persistent data directory.
+RUN apk add --no-cache net-snmp net-snmp-tools python3 py3-requests
 
 CMD [ "/run.sh" ]

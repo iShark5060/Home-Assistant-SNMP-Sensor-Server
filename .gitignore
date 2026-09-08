@@ -1,7 +1,7 @@
 # General
 faces-config.NavData
 
-# Maven 
+# Maven
 target/
 
 # NetBeans
@@ -31,3 +31,7 @@ out/
 
 # Windows default
 desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]

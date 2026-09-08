@@ -7,11 +7,21 @@
 ![amd64](https://img.shields.io/badge/amd64-yes-green.svg)
 [![Cursor](https://img.shields.io/badge/Cursor-IDE-141414?logo=cursor&logoColor=white)](https://cursor.com)
 
-Home Assistant add-on that runs an SNMP v2c agent. Expose Home Assistant entities and host details to LibreNMS or Nagios.
+Home Assistant add-on that runs Net-SNMP `snmpd` on UDP **161**. Access is `off`, `v2c`, `v3`, or both. SNMPv3 is SHA-256 auth and AES-128 privacy.
+
+It can publish Home Assistant entity `state` strings through Net-SNMP `extend`. That is not a custom enterprise tree. The OIDs are:
+
+`NET-SNMP-EXTEND-MIB::nsExtendOutput1Line."<entity_id>"`
+
+A poll of one of those OIDs forks a small Python helper that GETs `http://supervisor/core/api/states/<entity_id>`. There is no cache. A monitor that walks 200 entities makes 200 Supervisor calls. The entity list is built when the add-on starts, so restart after you add entities or change the whitelist.
+
+`sysName`, `sysLocation`, and `sysContact` come from the options below. This is not a full host agent. Disk, load, and memory checks are not configured.
 
 ## Requirements
 
-This add-on targets **64-bit** Home Assistant installations only, matching [current Supervisor support](https://www.home-assistant.io/blog/2025/05/22/deprecating-core-and-supervised-installation-methods-and-32-bit-systems/): **aarch64** (ARM64, e.g. Raspberry Pi 4/5) and **amd64** (x86_64). Older 32-bit platforms (`armhf`, `armv7`, `i386`) are not listed in the add-on manifest, so they are unsupported here as well.
+64-bit Home Assistant only, matching [current Supervisor support](https://www.home-assistant.io/blog/2025/05/22/deprecating-core-and-supervised-installation-methods-and-32-bit-systems/): **aarch64** and **amd64**. Older 32-bit platforms (`armhf`, `armv7`, `i386`) are unsupported.
+
+Entity exposure needs Supervisor (`homeassistant_api`). Without that, the extend helpers cannot read states.
 
 ## Installation
 
@@ -34,11 +44,35 @@ location: Home
 name: RPi
 email: rpi@me.com
 expose_sensors: true
-expose_sensors_OID_base: "1.3.6.1.4.1.43.10.210."
 sensors_to_expose: all
+snmp_version: v2c
+v3_username: hass
+v3_auth_passphrase: ""
+v3_priv_passphrase: ""
 ```
 
-`sensors_to_expose` is `all` (every entity) or a comma-separated `entity_id` whitelist with `*` wildcards. `expose_sensors_OID_base` is accepted by the UI but is **not applied** yet; entity OIDs come from Net-SNMP `extend`.
+`sensors_to_expose` is `all` (every entity_id, not only `sensor.*`) or a comma-separated whitelist with `*` wildcards, for example `sensor.temperature_*,light.*`.
+
+`snmp_version` is `off`, `v2c`, `v3`, or `v2c+v3`. For v3, set `v3_username` and both passphrases (8+ characters).
+
+If you are upgrading from 1.5.x and start fails on an unknown option, delete `expose_sensors_OID_base` from the add-on YAML. That field never drove OIDs and is gone.
+
+### Query
+
+v2c, from another host:
+
+```bash
+snmpwalk -v2c -c public <home-assistant-ip> NET-SNMP-EXTEND-MIB::nsExtendOutput1Line
+```
+
+v3 (`authPriv`, username `hass` unless you changed it):
+
+```bash
+snmpwalk -v3 -l authPriv -u hass \
+  -a SHA-256 -A 'your-auth-passphrase' \
+  -x AES -X 'your-priv-passphrase' \
+  <home-assistant-ip> NET-SNMP-EXTEND-MIB::nsExtendOutput1Line
+```
 
 ## Support
 

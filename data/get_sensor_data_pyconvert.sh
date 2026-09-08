@@ -1,3 +1,2 @@
-#!/usr/bin/with-contenv bashio
-
-echo "$(python3 get_sensor_data.py $1)"
+#!/bin/sh
+exec python3 /get_sensor_data.py "$1"

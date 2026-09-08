@@ -4,7 +4,6 @@
 import fnmatch
 import json
 import os
-import re
 import subprocess
 import sys
 import time
@@ -12,19 +11,12 @@ import time
 from requests import get
 
 configFile = sys.argv[1]
-OIDPrefix = sys.argv[2]
-sensors_to_expose = sys.argv[3]
+sensors_to_expose = sys.argv[2]
 SupervisorToken = os.environ["SUPERVISOR_TOKEN"]
 
-
-def sensor_finder(patterns, string):
-    """Return True if ``string`` matches pattern in ``patterns``; ``*`` matches any substring."""
-    for element in patterns:
-        regex = re.escape(element).replace("\\*", ".*")
-        if re.fullmatch(regex, string):
-            return True
-    return False
-
+MAX_ATTEMPTS = 12
+RETRY_SLEEP = 5
+EXTEND_SCRIPT = "/get_sensor_data_pyconvert.sh"
 
 sensors_to_expose = sensors_to_expose.replace(" ", "")
 if sensors_to_expose != "all" and sensors_to_expose != "":
@@ -35,16 +27,14 @@ if sensors_to_expose != "all" and sensors_to_expose != "":
 else:
     sensorlist = ["*"]
 
-configFileObject = open(configFile, "a", encoding="utf-8")
-
 URL = "http://supervisor/core/api/states"
 headers = {
     "Authorization": "Bearer " + SupervisorToken,
     "content-type": "application/json",
 }
 
-
-while True:
+HA_SENSORS = None
+for attempt in range(1, MAX_ATTEMPTS + 1):
     ha_sensors_request = get(URL, headers=headers, timeout=30)
 
     status_code = ha_sensors_request.status_code
@@ -54,41 +44,48 @@ while True:
 
     if status_code == 200 and content_type.startswith("application/json"):
         try:
-            ha_sensors = ha_sensors_request.json()
-            break
+            payload = ha_sensors_request.json()
         except json.JSONDecodeError as e:
-            print(f"Error ocurred trying decode JSON response: {e}")
+            print(f"Error occurred trying to decode JSON response: {e}")
+        else:
+            if isinstance(payload, list):
+                HA_SENSORS = payload
+                break
+            print("Supervisor JSON was not a list of states")
     else:
         print(
             "The supervisor has returned invalid information, waiting 5 seconds to retry..."
         )
 
-    time.sleep(5)
+    if attempt == MAX_ATTEMPTS:
+        print(f"Supervisor API did not return JSON after {MAX_ATTEMPTS} attempts.")
+        sys.exit(1)
+
+    time.sleep(RETRY_SLEEP)
 
 print("Generated SNMP OIDs:")
-for sensor in ha_sensors:
-    sensorID = sensor["entity_id"]
+with open(configFile, "a", encoding="utf-8") as configFileObject:
+    for sensor in HA_SENSORS:
+        sensorID = sensor["entity_id"]
 
-    TOTAL_MATCHES = 0
-    for wildcardelement in sensorlist:
-        TOTAL_MATCHES += len(fnmatch.filter([sensorID], wildcardelement))
+        TOTAL_MATCHES = 0
+        for wildcardelement in sensorlist:
+            TOTAL_MATCHES += len(fnmatch.filter([sensorID], wildcardelement))
 
-    if TOTAL_MATCHES <= 0:
-        continue
+        if TOTAL_MATCHES <= 0:
+            continue
 
-    sensorOID = subprocess.check_output(
-        'snmptranslate -On NET-SNMP-EXTEND-MIB::nsExtendOutput1Line.\\"'
-        + sensorID
-        + '\\"',
-        shell=True,
-        stderr=subprocess.STDOUT,
-        text=True,
-    )
+        sensorOID = subprocess.check_output(
+            [
+                "snmptranslate",
+                "-On",
+                'NET-SNMP-EXTEND-MIB::nsExtendOutput1Line."' + sensorID + '"',
+            ],
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
 
-    configFileObject.write(
-        "extend " + sensorID + " get_sensor_data_pyconvert.sh " + sensorID + "\n"
-    )
-    print("Added SNMP sensor " + sensorID + " with OID: " + sensorOID)
-
-
-configFileObject.close()
+        configFileObject.write(
+            "extend " + sensorID + " " + EXTEND_SCRIPT + " " + sensorID + "\n"
+        )
+        print("Added SNMP sensor " + sensorID + " with OID: " + sensorOID)

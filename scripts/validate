@@ -5,6 +5,5 @@ cd "$(dirname "$0")/.."
 echo '==> python3 -m py_compile'
 python3 -m py_compile data/get_sensor_data.py data/snmpd_configurator.py
 echo '==> docker build'
-BUILD_FROM="${BUILD_FROM:-ghcr.io/home-assistant/amd64-base:3.20}"
-docker build --build-arg "BUILD_FROM=${BUILD_FROM}" -t ha-snmp:validate .
+docker build -t ha-snmp:validate .
 echo '==> validate passed'

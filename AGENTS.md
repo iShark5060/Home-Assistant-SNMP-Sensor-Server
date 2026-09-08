@@ -16,4 +16,4 @@ When `expose_sensors` is true, `snmpd_configurator.py` appends snmpd `extend` li
 
 `snmp_version` is `off` (idle, no snmpd), `v2c`, `v3`, or `v2c+v3`. v2c uses `community`. v3 uses custom `v3_username` plus passphrases: `rouser <user> priv` in `/etc/snmp/snmpd.conf` and `createUser <user> SHA-256 … AES …` in `/data/net-snmp/snmpd.conf` (symlinked as snmpd's persistent dir). That write happens before `snmpd` starts. snmpd rewrites the persistent file on shutdown, so a `createUser` added while it is running is discarded. Prior `usmUser`/`createUser` lines are stripped only when v3 is enabled at start. Passphrases must be 8+ characters.
 
-`scripts/validate` compiles `data/*.py` then builds with `--build-arg BUILD_FROM=…` (default `ghcr.io/home-assistant/amd64-base:3.20`).
+`scripts/validate` compiles `data/*.py` then `docker build` (Dockerfile `FROM ghcr.io/home-assistant/base:3.24`). Supervisor 2026.04+ does not pass `BUILD_FROM`.

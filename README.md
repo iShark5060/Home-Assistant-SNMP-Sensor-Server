@@ -7,7 +7,7 @@
 ![amd64](https://img.shields.io/badge/amd64-yes-green.svg)
 [![Cursor](https://img.shields.io/badge/Cursor-IDE-141414?logo=cursor&logoColor=white)](https://cursor.com)
 
-Home Assistant add-on that runs an SNMP v2c agent. Expose Home Assistant entities and host details to LibreNMS or Nagios.
+Home Assistant add-on that runs an SNMP agent (v2c, v3, both, or off). SNMPv3 uses SHA-256 and AES-128. Expose Home Assistant entities and host details to LibreNMS or Nagios.
 
 ## Requirements
 
@@ -36,9 +36,15 @@ email: rpi@me.com
 expose_sensors: true
 expose_sensors_OID_base: "1.3.6.1.4.1.43.10.210."
 sensors_to_expose: all
+snmp_version: v2c
+v3_username: hass
+v3_auth_passphrase: ""
+v3_priv_passphrase: ""
 ```
 
 `sensors_to_expose` is `all` (every entity) or a comma-separated `entity_id` whitelist with `*` wildcards. `expose_sensors_OID_base` is accepted by the UI but is **not applied** yet; entity OIDs come from Net-SNMP `extend`.
+
+`snmp_version` is `off`, `v2c`, `v3`, or `v2c+v3`. For v3, set `v3_username` (your USM name) and both passphrases. Auth is SHA-256, privacy is AES-128.
 
 ## Support
 

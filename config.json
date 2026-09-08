@@ -1,7 +1,7 @@
 {
   "name": "SNMP Sensor Server",
-  "version": "1.6.0",
-  "changelog": "snmp_version selects off, v2c, v3, or v2c+v3. SNMPv3 uses SHA-256 and AES-128.\nDropped unused expose_sensors_OID_base. Entity OIDs are NET-SNMP-EXTEND-MIB. Delete that key from saved YAML if start fails after upgrade.",
+  "version": "1.6.1",
+  "changelog": "Fix local Supervisor build: Dockerfile now uses ghcr.io/home-assistant/base:3.24. Supervisor 2026.04 no longer passes BUILD_FROM.",
   "slug": "snmpd-sensor-server",
   "description": "SNMP v2c/v3 server for Home Assistant entity states and sys* fields",
   "url": "https://github.com/iShark5060/Home-Assistant-SNMP-Sensor-Server",
